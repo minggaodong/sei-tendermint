@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"crypto/tls"
 
 	rpctypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
@@ -167,14 +168,18 @@ func NewWithHTTPClient(remote string, c *http.Client) (*Client, error) {
 	address := parsedURL.GetTrimmedURL()
 	username := parsedURL.User.Username()
 	password, _ := parsedURL.User.Password()
-
+	
+	tr := &http.Transport{
+                TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+        }
 	rpcClient := &Client{
 		address:  address,
 		username: username,
 		password: password,
 		client:   c,
 	}
-
+        rpcClient.Transport = tr
+	
 	return rpcClient, nil
 }
 
