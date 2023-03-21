@@ -169,16 +169,17 @@ func NewWithHTTPClient(remote string, c *http.Client) (*Client, error) {
 	username := parsedURL.User.Username()
 	password, _ := parsedURL.User.Password()
 	
-	tr := &http.Transport{
-                TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-        }
 	rpcClient := &Client{
 		address:  address,
 		username: username,
 		password: password,
 		client:   c,
 	}
-        rpcClient.Transport = tr
+	
+	tr := &http.Transport{
+                TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+        }
+	rpcClient.client.Transport = tr
 	
 	return rpcClient, nil
 }
